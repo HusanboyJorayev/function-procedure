@@ -3,6 +3,7 @@ package org.example.functionprosedure.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 
 import java.io.Serializable;
 import java.util.List;
@@ -67,6 +68,13 @@ public class GenericResponse implements Serializable {
                 .code(status.value())
                 .status(status)
                 .data(data)
+                .build();
+    }
+
+    public static GenericResponse error(HttpStatusCode code, String message) {
+        return GenericResponse.builder()
+                .code(code.value())
+                .message(message)
                 .build();
     }
 }

@@ -4,9 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.example.functionprosedure.dto.GenericResponse;
 import org.example.functionprosedure.dto.ValidDto;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,5 +42,14 @@ public class GlobalExceptions {
     @ExceptionHandler(Exception.class)
     public GenericResponse handle(final Exception e) {
         return GenericResponse.error(HttpStatus.BAD_REQUEST, e.getMessage());
+    }
+
+    @ExceptionHandler(HttpClientErrorException.class)
+    public GenericResponse handle(final HttpClientErrorException e) {
+        HttpStatusCode statusCode = e.getStatusCode();
+        if (statusCode instanceof HttpStatus status) {
+            return GenericResponse.error(status, e.getMessage());
+        }
+        return GenericResponse.error(e.getStatusCode(), e.getMessage());
     }
 }
